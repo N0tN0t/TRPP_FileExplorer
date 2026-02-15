@@ -36,6 +36,20 @@ def list_directory_contents(path):
 
 
 def main():
+    print("Выберите функцию:")
+    print("1: Вывести диски.")
+    print("2. Вывести содержимое по директории.")
+    inp = int(input())
+    if inp == 1:
+        drive_func()
+    elif inp == 2:
+        directory_func()
+    else:
+        print("Неправильный ввод!")
+        main()
+
+
+def drive_func():
     drives = get_drives()
     
     if not drives:
@@ -71,6 +85,18 @@ def file_func(path, items):
         print(f"Ошибка: '{selected_item}' является файлом, а не папкой")
         list_directory_contents(selected_path)
         file_func(path, items)
+
+
+def directory_func():
+    path = input("Введите директорию: ")
+
+    if os.path.isdir(path):
+        new_items = os.listdir(path)
+        list_directory_contents(path)
+        file_func(path, new_items)
+    else:
+        print(f"Ошибка: '{selected_item}' является файлом или не существует.")
+        directory_func()
 
 
 main()
