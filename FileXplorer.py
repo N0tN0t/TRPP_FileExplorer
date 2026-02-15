@@ -1,6 +1,9 @@
 import os
 import string
 
+directory = 0
+
+
 def get_drives():
     drives = []
     for letter in string.ascii_uppercase:
@@ -8,6 +11,7 @@ def get_drives():
         if os.path.exists(drive):
             drives.append(drive)
     return drives
+
 
 def list_directory_contents(path):
     try:
@@ -22,11 +26,14 @@ def list_directory_contents(path):
             full_path = os.path.join(path, item)
             item_type = "папка" if os.path.isdir(full_path) else "файл"
             print(f"{index} {item_type}: {item}")
-            
+
+        file_func(path, items)
+        
     except PermissionError:
         print("Ошибка: Нет доступа к этому диску (требуются права администратора).")
     except Exception as e:
         print(f"Произошла ошибка: {e}")
+
 
 def main():
     drives = get_drives()
@@ -48,5 +55,22 @@ def main():
             print("Неверный номер варианта.")
     except ValueError:
         print("Пожалуйста, введите число.")
+
+
+def file_func(path, items):
+    choice = int(input("Выберите номер папки для входа: "))
+    
+    selected_item = items[choice - 1]
+    selected_path = os.path.join(path, selected_item)
+    
+    if os.path.isdir(selected_path):
+        new_items = os.listdir(selected_path)
+        list_directory_contents(selected_path)
+        file_func(selected_path, new_items)
+    else:
+        print(f"Ошибка: '{selected_item}' является файлом, а не папкой")
+        list_directory_contents(selected_path)
+        file_func(path, items)
+
 
 main()
